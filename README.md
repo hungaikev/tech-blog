@@ -15,8 +15,6 @@ See [How To Brainstorm Talk Ideas](http://missgeeky.com/category/geeky-2/).
 
 ## Content guidelines
 
-The blog is public, so:
-
 * Keep blog posts short: 400-500 words is plenty, so write another post if you have more to say
 * Don’t write ‘this is the first post in a series’ unless the whole series is already _published_
 * Write for a developer audience: current and future colleagues, and your future self
