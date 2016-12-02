@@ -31,7 +31,7 @@ We should only increase this if we get a backlog of more than four or five unpub
 
 ## How to publish a blog post
 
-1. Pick a ‘short title’ (a.k.a. a slug) to identify the post; you can change this later
+1. Pick a URL-friendly ‘short title’ (a.k.a. a [slug](https://john.do/post-slugs/)) to identify the post; you can change this later
 1. Pick a planned publication date at least one week after the previous post’s date
 1. Create a new branch in the repo, named `post/short-title`
 1. Add a file `_posts/yyyy-mm-dd-short-title.md` with the planned publication date
