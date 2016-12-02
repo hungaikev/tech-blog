@@ -8,7 +8,7 @@ layout: article
 [JSON](https://en.wikipedia.org/wiki/JSON), specified by [RFC7159](https://tools.ietf.org/html/rfc7159) has taken over from [XML](https://en.wikipedia.org/wiki/XML) as data format of choice for web service [API](https://en.wikipedia.org/wiki/Application_programming_interface)s.
 Developers like how JSON is less verbose and easier to use than XML, but its limitations lead to extra work for some applications.
 
-![I don’t always use JSON, but when I do I include full type information](images/json-type-information-meme.jpg)
+![I don’t always use JSON, but when I do I include full type information](json-type-information-meme.jpg)
 
 JSON defines a small number of types: objects, arrays, numbers and strings, as well as three special values - `true`, `false` and `null`.
 However, JSON does not include a mechanism for defining custom domain types.
