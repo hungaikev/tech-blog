@@ -1,5 +1,5 @@
 author: Signavio
-exclude: Gemfile, Gemfile.lock, README.md
+exclude: [ Gemfile, Gemfile.lock, README.md ]
 future: false
 permalink: ":year/:title.html"
 timezone: Europe/Berlin
