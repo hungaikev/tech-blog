@@ -98,7 +98,6 @@ The next thing to try is making the type explicit.
 
 For the next step you can specify each JSON object’s type in a special inline property.
 You can probably avoid name clashes by using an underscore prefix, calling it `_type`.
-In Java,
 
 ```json
 "price" : {
@@ -163,7 +162,7 @@ This example uses a `@` prefix for the type name, to make the JSON more human-re
 }
 ```
 
-However, the JSON still has an another level of nesting, albeit with less fluff.
+However, the JSON still has another level of nesting, albeit with less fluff.
 
 ## 6. Multiple type properties
 
