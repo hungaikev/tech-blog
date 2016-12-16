@@ -68,6 +68,6 @@ We should only increase this if we get a backlog of more than four or five unpub
 
 ## Adding images and files to posts
 
-To link to an image, use a relative URL with no subfolders.
 Post URL paths start with a year, e.g. `/2017/`, so put image files in the repo’s `/2017` folder.
+To link to an image, use a relative URL starting with `../2017/` so that image paths work in both the GitHub file view as well as the rendered site.
 See existing blog posts for examples.
