@@ -17,7 +17,7 @@ This blog post compares their disadvantages, so you can choose the least bad for
 
 ## 1. No type information
 
-Consider this example of an invoice for some Signavio merchandise.
+Consider this example of an invoice for some [Signavio](http://www.signavio.com/) merchandise.
 The default way to serialise something like an invoice to JSON is not to include any type information.
 
 ```json
