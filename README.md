@@ -1,8 +1,10 @@
 # Signavio Tech Blog
 
-Rough notes for instructions for bloggers…
+This README provides a selection of tips, guidelines and instructions for bloggers.
 
-## What to write about
+## Planning a blog post
+
+### What to write about
 
 The best blog post to write is something that only you could write, however obscure the topic.
 In practice, this is likely to be one of:
@@ -17,7 +19,7 @@ In practice, this is likely to be one of:
 Everyone has something to write about!
 See [How To Brainstorm Talk Ideas](http://missgeeky.com/2016/11/21/how-to-brainstorm-talk-ideas/), which mostly applies to blogging as well as presenting.
 
-## How to develop content ideas
+### How to develop content ideas
 
 All writers develop their ideas differently, but here’s a standard process that you can use.
 
@@ -30,7 +32,9 @@ All writers develop their ideas differently, but here’s a standard process tha
 7. When you have a number of paragraphs, trying organising them into a few sections, with headings
 8. If you don’t know what to do next, ask someone for input on what you have so far
 
-## Content guidelines
+## Writing a blog post
+
+### Content guidelines
 
 These content guidelines should give writers and reviewers confidence that we can publish a blog post.
 
@@ -43,17 +47,57 @@ These content guidelines should give writers and reviewers confidence that we ca
 * Don’t make Signavio look bad
 * Spellcheck your text
 
-## Review guidelines
+### Blog post outline
+
+You may find it easier to write certain kinds of blog post if you follow a standard outline.
+In general:
+
+* Start by explicitly stating the goal of the blog post, e.g. to _introduce_ or _teach_ some topic, so the reader knows what to expect
+* Describe concrete problems and concrete solutions before describing general techniques, to make it easier to follow
+* Finish with a conclusion about what you’ve written, or suggest next steps, so the reader feels like they’ve finished
+
+A typical blog post might use some or all of the following outline.
+
+1. Introduction - one or two sentences on each of:
+   * Purpose - the blog post’s goal
+   * Scope - what you’ll cover and who it’s for
+   * Summary - what you’ll be able to do by the end
+2. Specific problem
+   * Describe a specific problem, ideally one you’ve actually faced
+   * Why did you want to solve this?
+3. Specific solution
+   * Solve one version of the problem, ignoring variations
+   * Break the solution into steps
+4. General solution
+   * Describe the rationale for your solution, e.g. _In general, …_
+   * How broadly could you use this approach?
+   * How might you approach variations on this problem?
+   * How could you improve on this solution?
+   * What other approaches did you consider?
+5. Conclusion
+   * What did you learn?
+   * Did you like doing it this way?
+   * Would you try it a different way next time?
+   * What are the next steps?
+
+Using an outline can help you avoid getting stuck.
+First, pick a section and write one sentence.
+If you have more to write, keep going until you run out.
+When you don’t know what to write, pick a different section.
+
+## Publishing a blog post
+
+### Review guidelines
 
 Blog posts require review before publication,
 
-## Content schedule
+### Content schedule
 
 To start with, we’ll publish posts no more frequently than once per week.
 A reasonable expectation is that every developer in the company will publish one blog post in 2017.
 We should only increase this if we get a backlog of more than four or five unpublished posts.
 
-## How to publish a blog post
+### How to publish a blog post
 
 1. Pick a URL-friendly ‘short title’ (a.k.a. a [slug](https://john.do/post-slugs/)) to identify the post; you can change this later
 1. Pick a planned publication date at least one week after the previous post’s date
@@ -66,7 +110,7 @@ We should only increase this if we get a backlog of more than four or five unpub
 1. Merge to master once you’ve had at least one review and resolved any comments
 1. Contribute an improvement to these instructions, to make it easier for the next person to publish their first post
 
-## Adding images and files to posts
+### Adding images and files to posts
 
 Post URL paths start with a year, e.g. `/2017/`, so put image files in the repo’s `/2017` folder.
 To link to an image, use a relative URL starting with `../2017/` so that image paths work in both the GitHub file view as well as the rendered site.
