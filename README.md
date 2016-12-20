@@ -4,29 +4,53 @@ Rough notes for instructions for bloggers…
 
 ## What to write about
 
-* A tutorial for something you learned how to do
-* What you wish everyone did differently
-* A technical problem you solved
+The best blog post to write is something that only you could write, however obscure the topic.
+In practice, this is likely to be one of:
+
+* A technical problem you solved, like a StackOverflow question and answer
+* A tutorial for something you learned how to do - a ‘How to’
+* What you wish everyone did differently - a lesson learned
+* Review/comparison of technologies that you have chosen between
 * Fun tech ideas you talked about over beers
-* Review/comparison of technologies you chose between
+* A demo of something cool, however pointless
 
 Everyone has something to write about!
-See [How To Brainstorm Talk Ideas](http://missgeeky.com/category/geeky-2/).
+See [How To Brainstorm Talk Ideas](http://missgeeky.com/2016/11/21/how-to-brainstorm-talk-ideas/), which mostly applies to blogging as well as presenting.
+
+## How to develop content ideas
+
+All writers develop their ideas differently, but here’s a standard process that you can use.
+
+1. Keep a list of every idea that makes you think _that would make a good blog post_
+2. Test each idea at the coffee machine or over a beer by starting a conversation about it
+3. Use other people’s questions about the idea to learn what would be interesting to write about
+4. Practice arguing for different points of view to discover what you want to convince people about
+5. Make notes for any points you make that sound particularly intelligent or funny
+6. Try writing up your notes to see what you can write a paragraph about
+7. When you have a number of paragraphs, trying organising them into a few sections, with headings
+8. If you don’t know what to do next, ask someone for input on what you have so far
 
 ## Content guidelines
 
-* Keep blog posts short: 400-500 words is plenty, so write another post if you have more to say
-* Don’t write ‘this is the first post in a series’ unless the whole series is already _published_
-* Write for a developer audience: current and future colleagues, and your future self
+These content guidelines should give writers and reviewers confidence that we can publish a blog post.
+
 * Be nice
+* Keep blog posts short: 400-500 words is plenty; if you have more to say, save it for another post
+* Write for a developer audience: current and future colleagues, and your future self
 * Celebrate work you did, while giving credit where credit is due
+* Don’t write ‘this is the first post in a series’ unless the whole series is already _published_
 * Don’t write anything that would violate our code of conduct
 * Don’t make Signavio look bad
+* Spellcheck your text
+
+## Review guidelines
+
+Blog posts require review before publication,
 
 ## Content schedule
 
 To start with, we’ll publish posts no more frequently than once per week.
-A reasonable expectation is that every developer
+A reasonable expectation is that every developer in the company will publish one blog post in 2017.
 We should only increase this if we get a backlog of more than four or five unpublished posts.
 
 ## How to publish a blog post
@@ -40,9 +64,10 @@ We should only increase this if we get a backlog of more than four or five unpub
 1. Build the site by [running Jekyll locally](https://help.github.com/articles/setting-up-your-github-pages-site-locally-with-jekyll/)
 1. Commit, push to your branch, and create a pull request
 1. Merge to master once you’ve had at least one review and resolved any comments
+1. Contribute an improvement to these instructions, to make it easier for the next person to publish their first post
 
 ## Adding images and files to posts
 
-To link to an image, use a relative URL with no subfolders.
 Post URL paths start with a year, e.g. `/2017/`, so put image files in the repo’s `/2017` folder.
+To link to an image, use a relative URL starting with `../2017/` so that image paths work in both the GitHub file view as well as the rendered site.
 See existing blog posts for examples.
