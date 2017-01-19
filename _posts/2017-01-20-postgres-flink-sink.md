@@ -19,7 +19,7 @@ In order to persist out results to some outside system, we have to use a data si
 
 Flink provides a number of "out of the box" [connectors](https://ci.apache.org/projects/flink/flink-docs-master/dev/connectors/index.html "out of the box connector documentation") with various guarantees. It is also possible to define your own.
 
-There is no out of the box postgres sink for Flink. This does not mean, however, that you have to start from scratch! There is a class, JDBCOutputFormat, that can be used to turn any jdbc connect-able database into a sink.
+There is no out of the box postgres sink for Flink. This does not mean, however, that you have to start from scratch! The [JDBCOutputFormat](https://github.com/apache/flink/blob/4d27f8f2deef9fad845ebc91cef121cf9b35f825/flink-connectors/flink-jdbc/src/main/java/org/apache/flink/api/java/io/jdbc/JDBCOutputFormat.java "github for JDBCOutputFormat") class can be used to turn any jdbc connect-able database into a sink.
 
 JDBCOutputFormat is/was part of the flink batch api, however it can also be used as a sink for the data stream api. It seems to be the recommended approach, judging from a few discussions I found on the flink user group.
 
@@ -47,9 +47,7 @@ CREATE TABLE cases
 );
 ~~~~
 
-It can store instances of Row. Row is basically just a wrapper for the parameters of the prepared statement.
-
-So now we just need to transform our data stream of cases into rows. We're going to map the id to caseid, and the trace hash to tracehash.
+The JDBCOutputFormat can only store instances of Row. A Row is basically just a wrapper for the parameters of the prepared statement. This means need to transform our data stream of cases into rows. We're going to map the id to caseid, and the trace hash to tracehash.
 
 ~~~~
 DataStream<Case> cases = ...
