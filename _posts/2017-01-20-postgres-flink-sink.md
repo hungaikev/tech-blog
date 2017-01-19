@@ -7,7 +7,7 @@ layout: article
 
 We started to play around with Apache Flink® to process some of our event data.
 
-What is Apache Flink®? [Apache Flink®](https://flink.apache.org/ "Apache Flink® at apache.org") is an open-source stream processing framework. It is the latest in streaming technology, providing [high throughput with low-latency and exactly once semantics](http://data-artisans.com/high-throughput-low-latency-and-exactly-once-stream-processing-with-apache-flink/ "dataArtisans article introducing the power of flink")
+[Apache Flink®](https://flink.apache.org/ "Apache Flink® at apache.org") is an open-source stream processing framework. It is the latest in streaming technology, providing [high throughput with low-latency and exactly once semantics](http://data-artisans.com/high-throughput-low-latency-and-exactly-once-stream-processing-with-apache-flink/ "dataArtisans article introducing the power of flink")
 
 Something about data artisans, the tutorials and the community?
 
@@ -15,8 +15,7 @@ Link to other blog post I read and used to get started with postgres sinks?
 
 We use Flink to perform a series of transformations on our data. At certain points we want to persist the results to a database (PostgreSQL), from where we serve a REST API.
 
-What are Sinks?
-[Data Sinks](https://ci.apache.org/projects/flink/flink-docs-master/dev/datastream_api.html#data-sinks "Flink data sink documentation") are connectors that consume Data Streams and forward them to files, sockets, external systems, or print them.
+In order to persist out results to some outside system, we have to use a data sink. [Data Sinks](https://ci.apache.org/projects/flink/flink-docs-master/dev/datastream_api.html#data-sinks "Flink data sink documentation") are connectors that consume Data Streams and forward them to files, sockets, external systems, or print them.
 
 Flink provides a number of "out of the box" [connectors](https://ci.apache.org/projects/flink/flink-docs-master/dev/connectors/index.html "out of the box connector documentation") with various guarantees. It is also possible to define your own.
 
