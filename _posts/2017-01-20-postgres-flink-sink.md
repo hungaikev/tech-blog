@@ -146,14 +146,63 @@ CREATE TABLE cases
 
 So now when I run my job I do not get any two rows with the same caseid.
 
-This means that every time I evaluate a case it is mapped to a row and written to the database.
+With this approach, every time I evaluate a case it is mapped to a row and written to the database.
 This is a lot of individual writes, what if I want to batch them up, so that I write to PostgreSQL less frequently? 
-`JDBCOutputFormat` has a `batchInterval`, which you can specify on the `JDBCOutputFormatBuilder`, however if I specify a batch interval of, for example, 5000 I would potentially never write anything to the database, or wait a very long time until anything was written. 
+`JDBCOutputFormat` has a `batchInterval`, which you can specify on the `JDBCOutputFormatBuilder`. If, however, I specify a batch interval of 5000, I would potentially never write anything to the database, or wait a very long time until anything was written. 
 
 Another approach would be to add both a batch interval and a timeout, however there is no easy way to extend `JDBCOutputFormat` to do this, so let's write our own sink.
 
 ## Writing our own Sink
 
+In order to write a Sink you must implement `SinkFunction<IN>` where `IN` is the input type parameter.
+This was `Row` for our previous sink, but now we can just use our `Case` type.
+We also have to maintain a database connection and so would like more control over when this is created.
+Extending `RichSinkFunction<IN>` means that we get a call back when our function is initialized; this is a good place to set up the database connection.
+
+Firstly, lets just get our sink working without any batching. 
+We'll extend `RichSinkFunction<IN>` with the same on conflict prepared statement and database schema as before.
+We'll also just hard code the PostgreSQL driver and connection details.
+
+```java
+public class RichCaseSink extends RichSinkFunction<Case> {
+	
+	private static final String UPSERT_CASE = "INSERT INTO public.cases (caseid, events) "
+			+ "VALUES (?, ?) "
+			+ "ON CONFLICT (caseid) DO UPDATE SET "
+			+ "  events=?";
+	
+	private PreparedStatement statement;
+	
+	
+	@Override
+	public void invoke(Case aCase) throws Exception {
+		
+		statement.setString(1, aCase.getId());
+		statement.setString(2, aCase.getTraceHash());
+		statement.setString(3, aCase.getTraceHash());
+		statement.addBatch();
+		statement.executeBatch();
+	}
+	
+	@Override
+	public void open(Configuration parameters) throws Exception {
+		Class.forName("org.postgresql.Driver");
+		Connection connection =
+				DriverManager.getConnection("jdbc:postgresql://localhost:5432/casedb?user=signavio&password=signavio");
+		
+		statement = connection.prepareStatement(UPSERT_CASE);
+	}
+	
+}
+```
+We need to add our new sink to our case data stream:
+
+```java
+DataStream<Case> cases = ...
+cases.addSink(new RichCaseSink());
+```
+
+And now we can just run or job to test out if the sink works, which it does.
 
 ## Checkpoint aware Sink
 
