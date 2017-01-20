@@ -59,8 +59,8 @@ CREATE TABLE cases
 );
 ```
 
-The `JDBCOutputFormat` can only store instances of Row. 
-A Row is a wrapper for the parameters of the prepared statement. 
+The `JDBCOutputFormat` can only store instances of `Row`. 
+A `Row` is a wrapper for the parameters of the prepared statement. 
 This means need to transform our data stream of cases into rows. 
 We're going to map the id to caseid, and the trace hash to tracehash by implementing a Flink MapFunction.
 
@@ -87,7 +87,8 @@ However, my console is being spammed with:
 
 `"Unknown column type for column %s. Best effort approach to set its value: %s."`
 
-This is because I did not set explicit type values for my parameters when I built the `JDBCOutputFormat`. I can do so using the builder and simply passing in an array of java.sql.Types.
+This is because I did not set explicit type values for my parameters when I built the `JDBCOutputFormat`. 
+I can do so using the builder and simply passing in an array of `java.sql.Types`.
 
 ```java
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
@@ -100,7 +101,8 @@ JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
 
 And now I don't get spammed with warnings.
 
-Ok, but instead of a new row I want to either create a new row if one does not exist, or update an existing row. I.e. do an upsert.
+Ok, but instead of a new row I want to either create a new row if one does not exist, or update an existing row. 
+I.e. do an upsert.
 
 I'm using PostgreSQL so I will just modify my query to include an `ON CONFLICT` statement.
 
@@ -108,7 +110,8 @@ I'm using PostgreSQL so I will just modify my query to include an `ON CONFLICT` 
 String query = "INSERT INTO public.cases (caseid, tracehash) VALUES (?, ?) ON CONFLICT (caseid) DO UPDATE SET events=?";
 ```
 
-This means I have a new parameter, and I must specify a value for this. I need to do so in my MapFunction, which now looks like this:
+This means I have a new parameter, and I must specify a value for this. 
+I need to do so in my MapFunction, which now looks like this:
 
 ```java
 DataStream<Case> cases = ...
@@ -148,7 +151,8 @@ This time when I run my job I do not get any two rows with the same caseid.
 
 With this approach, every time I evaluate a case it is mapped to a row and written to the database.
 This is a lot of individual writes, what if I want to batch them up, so that I write to PostgreSQL less frequently? 
-`JDBCOutputFormat` has a `batchInterval`, which you can specify on the `JDBCOutputFormatBuilder`. If, however, I specify a batch interval of 5000, I would potentially never write anything to the database, or wait a very long time until anything was written. 
+`JDBCOutputFormat` has a `batchInterval`, which you can specify on the `JDBCOutputFormatBuilder`. 
+If, however, I specify a batch interval of 5000, I would potentially never write anything to the database, or wait a very long time until anything was written. 
 
 Another approach would be to add both a batch interval and a timeout, however there is no easy way to extend `JDBCOutputFormat` to do this, so let's write our own sink.
 
