@@ -229,6 +229,8 @@ public void invoke(Case aCase) throws Exception {
 }
 ```
 
+The number of times we write to the database is now reduced, which is great, but it doesn't really mirror how Flink is doing things.
+
 ## Checkpoint aware Sink
 
 Flink also has a concept of checkpointing, what about if we wrote then.
