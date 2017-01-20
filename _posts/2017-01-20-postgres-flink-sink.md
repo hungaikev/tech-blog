@@ -244,4 +244,17 @@ The number of times we write to the database is now reduced, which is great, but
 Flink also has a concept of checkpointing, what about if we wrote then.
 What is checkpointing?
 
+By letting our sink implement `CheckpointListener.notifyCheckpointComplete(long checkpointId)` we will be notified when a checkpoint is completed.
+On notification we should upsert all cases completed up to, and including, the given checkpoint.
+
+This means that we also have to know, and keep track of, which checkpoint a pending case belongs to.
+`CheckpointedFunction` provides access to a `ManagedSnapshotContext` which can provide the checkpoint id.
+
+We must not forget to enable checkpointing on the `ExecutionEnvironment`:
+```java
+ExecutionEnvironment env = ...
+env.enableCheckpointing(CHECKPOINT_INTERVAL);
+```
+
+
 
