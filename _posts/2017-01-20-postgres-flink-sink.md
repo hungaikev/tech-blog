@@ -113,13 +113,13 @@ This means I have a new parameter, and I must specify a value for this. I need t
 ```java
 DataStream<Case> cases = ...
 		
-		DataStream<Row> rows = cases.map((MapFunction<Case, Row>) aCase -> {
-			Row row = new Row(3); // our prepared statement has 3 parameters
-			row.setField(0, aCase.getId()); //first parameter is caseid
-			row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
-			row.setField(2, aCase.getTraceHash()); //third parameter is also tracehash
-			return row;
-		});
+DataStream<Row> rows = cases.map((MapFunction<Case, Row>) aCase -> {
+	Row row = new Row(3); // our prepared statement has 3 parameters
+	row.setField(0, aCase.getId()); //first parameter is caseid
+	row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
+	row.setField(2, aCase.getTraceHash()); //third parameter is also tracehash
+	return row;
+});
 ```
 
 I must also add a type for this parameter when I build the `JDBCOutputFormat`:
@@ -144,7 +144,7 @@ CREATE TABLE cases
 );
 ```
 
-So now when I run my job I do not get any two rows with the same caseid.
+This time when I run my job I do not get any two rows with the same caseid.
 
 With this approach, every time I evaluate a case it is mapped to a row and written to the database.
 This is a lot of individual writes, what if I want to batch them up, so that I write to PostgreSQL less frequently? 
@@ -155,13 +155,14 @@ Another approach would be to add both a batch interval and a timeout, however th
 ## Writing our own Sink
 
 In order to write a Sink you must implement `SinkFunction<IN>` where `IN` is the input type parameter.
-This was `Row` for our previous sink, but now we can just use our `Case` type.
+This was `Row` for our previous sink, this time we can use our `Case` type.
+
 We also have to maintain a database connection and so would like more control over when this is created.
 Extending `RichSinkFunction<IN>` means that we get a call back when our function is initialized; this is a good place to set up the database connection.
 
 Firstly, lets just get our sink working without any batching. 
 We'll extend `RichSinkFunction<IN>` with the same on conflict prepared statement and database schema as before.
-We'll also just hard code the PostgreSQL driver and connection details.
+We'll hard code the PostgreSQL driver and connection details.
 
 ```java
 public class RichCaseSink extends RichSinkFunction<Case> {
@@ -202,7 +203,7 @@ DataStream<Case> cases = ...
 cases.addSink(new RichCaseSink());
 ```
 
-And now we can just run or job to test out if the sink works, which it does.
+Let's run our job to test out if the sink works, which it does!
 
 ## Checkpoint aware Sink
 
