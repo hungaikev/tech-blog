@@ -47,15 +47,15 @@ CREATE TABLE cases
 );
 ~~~~
 
-The JDBCOutputFormat can only store instances of Row. A Row is basically just a wrapper for the parameters of the prepared statement. This means need to transform our data stream of cases into rows. We're going to map the id to caseid, and the trace hash to tracehash.
+The JDBCOutputFormat can only store instances of Row. A Row is basically just a wrapper for the parameters of the prepared statement. This means need to transform our data stream of cases into rows. We're going to map the id to caseid, and the trace hash to tracehash by implementing a Flink MapFunction.
 
 ~~~~
 DataStream<Case> cases = ...
 		
 		DataStream<Row> rows = cases.map((MapFunction<Case, Row>) aCase -> {
-			Row row = new Row(2); // our table has 2 columns
-			row.setField(0, aCase.getId()); //first column is caseid
-			row.setField(1, aCase.getTraceHash()); //second column is tracehash
+			Row row = new Row(2); // our prepared statement has 2 parameters
+			row.setField(0, aCase.getId()); //first parameter is caseid
+			row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
 			return row;
 		});
 ~~~~
@@ -70,7 +70,7 @@ However, my console is being spammed with:
 
 `"Unknown column type for column %s. Best effort approach to set its value: %s."`
 
-This is because I didn't set explicit type values for my columns whenI build the JDBCOutputFormat
+This is because I didn't set explicit type values for my columns whenI build the JDBCOutputFormat. I can do so using the builder and simply passing in an array of java.sql.Types.
 
 ~~~~
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
@@ -89,7 +89,32 @@ I'm using PostgreSQL so I will just modify my query to include an ON CONFLICT st
 
 `String query = "INSERT INTO public.cases (caseid, tracehash) VALUES (?, ?) ON CONFLICT (caseid) DO UPDATE SET events=?";`
 
-I am also going to add a constraint to my table:
+This means I have a new parameter, and I must specify a value for this. I need to do so in my MapFunction, which now looks like this:
+
+~~~~
+DataStream<Case> cases = ...
+		
+		DataStream<Row> rows = cases.map((MapFunction<Case, Row>) aCase -> {
+			Row row = new Row(3); // our prepared statement has 3 parameters
+			row.setField(0, aCase.getId()); //first parameter is caseid
+			row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
+			row.setField(2, aCase.getTraceHash()); //third parameter is also tracehash
+			return row;
+		});
+~~~~
+
+I must also add a type for this parameter when I build the JDBCOutputFormat:
+
+~~~~
+JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
+     .setDrivername("org.postgresql.Driver")
+     .setDBUrl("jdbc:postgresql://localhost:1234/test?user=xxx&password=xxx")
+     .setQuery(query)
+     .setSqlTypes(new int[] { Types.VARCHAR, Types.VARCHAR, TypEs.VARCHAR }) //set the types
+     .finish();
+~~~~
+
+I also need to add a constraint to my table:
 
 ~~~~
 CREATE TABLE cases
@@ -100,6 +125,7 @@ CREATE TABLE cases
 );
 ~~~~
 
+So now when I run my job I do not get any two rows with the same caseid.
 
 Then I want to add some buffering, JDBCOutputFormat has some buffering. Take a look at that.
 
