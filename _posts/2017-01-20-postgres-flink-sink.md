@@ -11,7 +11,7 @@ Every time a task is performed this results in some event data being emitted; th
 The events of one case form the tracehash of the case.
 
 [Apache Flink®](https://flink.apache.org/ "Apache Flink® at apache.org") is an open-source stream processing framework. 
-It is the latest in streaming technology, providing [high throughput with low-latency and exactly once semantics](http://data-artisans.com/high-throughput-low-latency-and-exactly-once-stream-processing-with-apache-flink/ "dataArtisans article introducing the power of Flink")
+It is the latest in streaming technology, providing [high throughput with low-latency and exactly once semantics](http://data-artisans.com/high-throughput-low-latency-and-exactly-once-stream-processing-with-apache-flink/ "dataArtisans article introducing the power of Flink").
 
 Something about data artisans, the tutorials and the community?
 
@@ -87,7 +87,7 @@ However, my console is being spammed with:
 
 `"Unknown column type for column %s. Best effort approach to set its value: %s."`
 
-This is because I did not set explicit type values for my columns when I built the `JDBCOutputFormat`. I can do so using the builder and simply passing in an array of java.sql.Types.
+This is because I did not set explicit type values for my parameters when I built the `JDBCOutputFormat`. I can do so using the builder and simply passing in an array of java.sql.Types.
 
 ```java
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
@@ -102,7 +102,7 @@ And now I don't get spammed with warnings.
 
 Ok, but instead of a new row I want to either create a new row if one does not exist, or update an existing row. I.e. do an upsert.
 
-I'm using PostgreSQL so I will just modify my query to include an ON CONFLICT statement:
+I'm using PostgreSQL so I will just modify my query to include an `ON CONFLICT` statement.
 
 ```java
 String query = "INSERT INTO public.cases (caseid, tracehash) VALUES (?, ?) ON CONFLICT (caseid) DO UPDATE SET events=?";
@@ -146,10 +146,18 @@ CREATE TABLE cases
 
 So now when I run my job I do not get any two rows with the same caseid.
 
-Then I want to add some buffering, `JDBCOutputFormat` has some buffering. Take a look at that.
+This means that every time I evaluate a case it is mapped to a row and written to the database.
+This is a lot of individual writes, what if I want to batch them up, so that I write to PostgreSQL less frequently? 
+`JDBCOutputFormat` has a `batchInterval`, which you can specify on the `JDBCOutputFormatBuilder`, however if I specify a batch interval of, for example, 5000 I would potentially never write anything to the database, or wait a very long time until anything was written. 
 
-This is just a fixed size, what is I want to buffer with a size and a timeout, or even better still, take the latest checkpoint into consideration?
+Another approach would be to add both a batch interval and a timeout, however there is no easy way to extend `JDBCOutputFormat` to do this, so let's write our own sink.
 
+## Writing our own Sink
+
+
+## Checkpoint aware Sink
+
+Flink also has a concept of checkpointing, what about if we wrote then.
 What is checkpointing?
 
 
