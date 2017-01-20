@@ -1,5 +1,5 @@
 ---
-title: Writing to Postgres from Apache Flink®
+title: Writing to PostgreSQL from Apache Flink®
 description: 
 tags: Apache Flink®, PostgreSQL
 layout: article
@@ -11,7 +11,7 @@ We started to play around with Apache Flink® to process some of our event data.
 
 Something about data artisans, the tutorials and the community?
 
-Link to other blog post I read and used to get started with postgres sinks?
+Link to other blog post I read and used to get started with PostgreSQL sinks?
 
 We use Flink to perform a series of transformations on our data. At certain points we want to persist the results to a database (PostgreSQL), from where we serve a REST API.
 
@@ -19,11 +19,11 @@ In order to persist out results to some outside system, we have to use a data si
 
 Flink provides a number of "out of the box" [connectors](https://ci.apache.org/projects/flink/flink-docs-master/dev/connectors/index.html "out of the box connector documentation") with various guarantees. It is also possible to define your own.
 
-There is no out of the box postgres sink for Flink. This does not mean, however, that you have to start from scratch! The [JDBCOutputFormat](https://github.com/apache/flink/blob/4d27f8f2deef9fad845ebc91cef121cf9b35f825/flink-connectors/flink-jdbc/src/main/java/org/apache/flink/api/java/io/jdbc/JDBCOutputFormat.java "github for JDBCOutputFormat") class can be used to turn any jdbc connect-able database into a sink.
+There is no out of the box PostgreSQL sink for Flink. This does not mean, however, that you have to start from scratch! The [`JDBCOutputFormat`](https://github.com/apache/flink/blob/4d27f8f2deef9fad845ebc91cef121cf9b35f825/flink-connectors/flink-jdbc/src/main/java/org/apache/flink/api/java/io/jdbc/`JDBCOutputFormat`.java "github for `JDBCOutputFormat`") class can be used to turn any jdbc connect-able database into a sink.
 
-JDBCOutputFormat is/was part of the flink batch api, however it can also be used as a sink for the data stream api. It seems to be the recommended approach, judging from a few discussions I found on the flink user group.
+`JDBCOutputFormat` is/was part of the flink batch api, however it can also be used as a sink for the data stream api. It seems to be the recommended approach, judging from a few discussions I found on the flink user group.
 
-The JDBCOutputFormat requires a prepared statement, driver and database connection.
+The `JDBCOutputFormat` requires a prepared statement, driver and database connection.
 
 ~~~~
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
@@ -47,7 +47,7 @@ CREATE TABLE cases
 );
 ~~~~
 
-The JDBCOutputFormat can only store instances of Row. A Row is basically just a wrapper for the parameters of the prepared statement. This means need to transform our data stream of cases into rows. We're going to map the id to caseid, and the trace hash to tracehash by implementing a Flink MapFunction.
+The `JDBCOutputFormat` can only store instances of Row. A Row is basically just a wrapper for the parameters of the prepared statement. This means need to transform our data stream of cases into rows. We're going to map the id to caseid, and the trace hash to tracehash by implementing a Flink MapFunction.
 
 ~~~~
 DataStream<Case> cases = ...
@@ -70,7 +70,7 @@ However, my console is being spammed with:
 
 `"Unknown column type for column %s. Best effort approach to set its value: %s."`
 
-This is because I didn't set explicit type values for my columns whenI build the JDBCOutputFormat. I can do so using the builder and simply passing in an array of java.sql.Types.
+This is because I did not set explicit type values for my columns when I built the `JDBCOutputFormat`. I can do so using the builder and simply passing in an array of java.sql.Types.
 
 ~~~~
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
@@ -103,7 +103,7 @@ DataStream<Case> cases = ...
 		});
 ~~~~
 
-I must also add a type for this parameter when I build the JDBCOutputFormat:
+I must also add a type for this parameter when I build the `JDBCOutputFormat`:
 
 ~~~~
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
@@ -127,7 +127,7 @@ CREATE TABLE cases
 
 So now when I run my job I do not get any two rows with the same caseid.
 
-Then I want to add some buffering, JDBCOutputFormat has some buffering. Take a look at that.
+Then I want to add some buffering, `JDBCOutputFormat` has some buffering. Take a look at that.
 
 This is just a fixed size, what is I want to buffer with a size and a timeout, or even better still, take the latest checkpoint into consideration?
 
