@@ -205,6 +205,30 @@ cases.addSink(new RichCaseSink());
 
 Let's run our job to test out if the sink works, which it does!
 
+To add batching to our sink we'll follow a similar approach to the `JDBCOutputFormat`, but with a timeout.
+We'll maintain a count of cases since the last batch was saved and only save if either this count reaches a limit, or a certain time period has passed.
+
+In our invoke function we have to increment a batch count, and only execute a batch if these conditions are met.
+Once a batch is executed we have to reset the count and record the time of the last batch.
+
+```java
+@Override
+public void invoke(Case aCase) throws Exception {
+	
+	statement.setString(1, aCase.getId());
+	statement.setString(2, aCase.getTraceHash());
+	statement.setString(3, aCase.getTraceHash());
+	statement.addBatch();
+	batchCount++;
+	
+	if (shouldExecuteBatch()) {
+		statement.executeBatch();
+		batchCount = 0;
+		lastBatchTime = System.currentTimeMillis();
+	}
+}
+```
+
 ## Checkpoint aware Sink
 
 Flink also has a concept of checkpointing, what about if we wrote then.
