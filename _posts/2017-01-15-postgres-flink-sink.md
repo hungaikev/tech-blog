@@ -240,7 +240,7 @@ public void invoke(Case aCase) throws Exception {
 
 The number of times we write to the database is now reduced, which is great, but it doesn't really mirror how Flink is doing things.
 
-## Checkpoint aware Sink
+## Making our Sink checkpoint aware
 
 Flink also has a concept of [checkpointing](https://ci.apache.org/projects/flink/flink-docs-master/dev/stream/checkpointing.html "Flink checkpoint documentation"):
 >Every function and operator in Flink can be stateful. 
