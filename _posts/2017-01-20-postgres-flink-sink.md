@@ -330,10 +330,11 @@ So now we have our first attempt at a checkpoint aware sink; we have learnt a li
 
 This approach is almost definitely not production ready. 
 In order to be more confident in our sink we need to understand in more detail the checkpoint mechanism; when checkpoints fail and in particular if we should be using the state mechanism to store our pending checkpoints.
-
-We have not thought about how threadsafe our sink is. 
+We have also not thought about how threadsafe our sink is. 
 In order to understand the requirement, in addition to understand the checkpoint mechanism in more detail, we probably need to also know more about the [job scheduling](https://ci.apache.org/projects/flink/flink-docs-master/internals/job_scheduling.html "Flink documentation for job scheduling").
 
 We may also want to consider not using PostgreSQL as a sink, instead using [queryable state](https://issues.apache.org/jira/browse/FLINK-3779 "queryable state jira ticket") to serve our API.
+
+However, we have now got a good starting point to go on with our Flink explorations.
 
 Note: I was using a snapshot version of Flink 1.3 for the above.
