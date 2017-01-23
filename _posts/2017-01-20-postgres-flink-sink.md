@@ -291,31 +291,29 @@ Finally we have to write to the database when a checkpoint completes:
 ```java
 @Override
 public void notifyCheckpointComplete(long checkpointId) throws Exception {
-	synchronized (pendingCasesPerCheckpoint) {
+	
+	Iterator<Map.Entry<Long, List<Case>>> pendingCheckpointsIt =
+			pendingCasesPerCheckpoint.entrySet().iterator();
+	
+	while (pendingCheckpointsIt.hasNext()) {
 		
-		Iterator<Map.Entry<Long, List<Case>>> pendingCheckpointsIt =
-				pendingCasesPerCheckpoint.entrySet().iterator();
+		Map.Entry<Long, List<Case>> entry = pendingCheckpointsIt.next();
+		Long pastCheckpointId = entry.getKey();
+		List<Case> pendingCases = entry.getValue();
 		
-		while (pendingCheckpointsIt.hasNext()) {
+		if (pastCheckpointId <= checkpointId) {
 			
-			Map.Entry<Long, List<Case>> entry = pendingCheckpointsIt.next();
-			Long pastCheckpointId = entry.getKey();
-			List<Case> pendingCases = entry.getValue();
-			
-			if (pastCheckpointId <= checkpointId) {
-				
-				for (Case pendingCase : pendingCases) {
-					statement.setString(1, pendingCase.getId());
-					statement.setString(2, pendingCase.getTraceHash());
-					statement.setString(3, pendingCase.getTraceHash());
-					statement.addBatch();
-				}
-				pendingCheckpointsIt.remove();
+			for (Case pendingCase : pendingCases) {
+				statement.setString(1, pendingCase.getId());
+				statement.setString(2, pendingCase.getTraceHash());
+				statement.setString(3, pendingCase.getTraceHash());
+				statement.addBatch();
 			}
+			pendingCheckpointsIt.remove();
 		}
-		statement.executeBatch();
-		
 	}
+	statement.executeBatch();
+	
 }
 ```
 
@@ -325,9 +323,11 @@ ExecutionEnvironment env = ...
 env.enableCheckpointing(10000L);
 ```
 
-When the job is run we can see that the database is only being written to every 10 seconds.
+When the job is run we can see that the database is only being written to when a checkpoint completes, i.e. every 10 seconds.
+
 
 So now we have our first attempt at a checkpoint aware sink; we have learnt a little bit more about Flink sinks, state and checkpointing.
+
 This approach is almost definitely not production ready. 
 In order to be more confident in our sink we need to understand in more detail the checkpoint mechanism; when checkpoints fail and in particular if we should be using the state mechanism to store our pending checkpoints.
 
