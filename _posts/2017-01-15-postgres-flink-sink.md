@@ -88,7 +88,9 @@ rows.writeUsingOutputFormat(jdbcOutput);
 ```
 
 Now we can run our Flink job.
-Our job keys the stream by case id and build or update a case every time the window is evaluated. 
+Our job keys the stream by case id and builds or updates a case every time the window is evaluated. 
+
+### What is a window?
 
 Flink processes streams of data; these are infinite.
 If they are infinite how do we know when to process some data?
