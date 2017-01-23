@@ -87,7 +87,23 @@ And finally we can specify the sink:
 rows.writeUsingOutputFormat(jdbcOutput);
 ```
 
-So now every time our window is evaluated we get a new row in the database, woo!
+Now we can run our Flink job.
+Our job keys the stream by case id and build or update a case every time the window is evaluated. 
+
+Flink processes streams of data; these are infinite.
+If they are infinite how do we know when to process some data?
+This is where [windows](https://flink.apache.org/news/2015/12/04/Introducing-windows.html "Introducing windows") come in.
+Windows are a mechanism to allow us to group together and evaluate data from the stream.
+Windows can be specified using time, for example, evaluate all data from the last 10 minutes.
+They can also slide, or overlap: every minute evaluate all the data of the last 10 minutes.
+Or they can count: every 10 events, evaluate the last 20.
+Flink can also be extended to provide other more complex windowing heuristics.
+
+For our use case we are currently using a session window: this means that the window is evaluated after some gap period has elapsed with no new data being received.
+This is because we currently expect "bursts" in activity, with gaps, much like a session on a website. 
+I expect we will end up implementing our own windowing heuristic as we better udnerstand Flink and refine our requirements.
+
+Running our job we see that every time the window is evaluated we get a new row in the database, woo!
 
 However, my console is being spammed with:
 
