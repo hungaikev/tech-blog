@@ -237,7 +237,7 @@ public void invoke(Case aCase) throws Exception {
 }
 ```
 
-The number of times we write to the database is now reduced, which is great, but it doesn't realANly mirror how Flink is doing things.
+The number of times we write to the database is now reduced, which is great, but it doesn't really mirror how Flink is doing things.
 
 ## Checkpoint aware Sink
 
@@ -256,6 +256,66 @@ On notification we should upsert all cases completed up to, and including, the g
 
 This means that we also have to know, and keep track of, which checkpoint a pending case belongs to.
 `CheckpointedFunction` provides access to a `ManagedSnapshotContext` which can provide the checkpoint id.
+
+We have to change our invoke method so that we just store the cases until we are ready to write them to the database:
+
+```java
+@Override
+public void invoke(Case aCase) throws Exception {
+	pendingCases.add(aCase);
+}
+```
+
+Next we have to figure out which snapshot a case belongs to.
+We do this by implementing `CheckpointedFunction.snapshotState(FunctionSnapshotContext context)`.
+We will maintain a map of checkpoint ids to lists of cases.
+
+```java
+@Override
+public void snapshotState(FunctionSnapshotContext context) throws Exception {
+	long checkpointId = context.getCheckpointId();
+	List<Case> cases = pendingCasesPerCheckpoint.get(checkpointId);
+	if(cases == null){
+		cases = new ArrayList<>();
+		pendingCasesPerCheckpoint.put(checkpointId, cases);
+	}
+	cases.addAll(pendingCases);
+	pendingCases.clear();
+}
+```
+
+Finally we have to write to the database when a checkpoint completes:
+
+```java
+@Override
+public void notifyCheckpointComplete(long checkpointId) throws Exception {
+	synchronized (pendingCasesPerCheckpoint) {
+		
+		Iterator<Map.Entry<Long, List<Case>>> pendingCheckpointsIt =
+				pendingCasesPerCheckpoint.entrySet().iterator();
+		
+		while (pendingCheckpointsIt.hasNext()) {
+			
+			Map.Entry<Long, List<Case>> entry = pendingCheckpointsIt.next();
+			Long pastCheckpointId = entry.getKey();
+			List<Case> pendingCases = entry.getValue();
+			
+			if (pastCheckpointId <= checkpointId) {
+				
+				for (Case pendingCase : pendingCases) {
+					statement.setString(1, pendingCase.getId());
+					statement.setString(2, pendingCase.getTraceHash());
+					statement.setString(3, pendingCase.getTraceHash());
+					statement.addBatch();
+				}
+				pendingCheckpointsIt.remove();
+			}
+		}
+		statement.executeBatch();
+		
+	}
+}
+```
 
 We must not forget to enable checkpointing on the `ExecutionEnvironment`:
 ```java
