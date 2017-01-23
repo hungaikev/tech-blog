@@ -317,11 +317,12 @@ public void notifyCheckpointComplete(long checkpointId) throws Exception {
 }
 ```
 
-We must not forget to enable checkpointing on the `ExecutionEnvironment`:
+We must not forget to enable checkpointing on the `ExecutionEnvironment`, where the parameter is the time interval between state checkpoints in milliseconds.
 ```java
 ExecutionEnvironment env = ...
-env.enableCheckpointing(CHECKPOINT_INTERVAL);
+env.enableCheckpointing(10000L);
 ```
 
+When the job is run we can see that the database is only being written to every 10 seconds.
 
 
