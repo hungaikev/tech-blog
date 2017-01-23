@@ -25,7 +25,7 @@ At certain points we want to persist the results to a database (PostgreSQL), fro
 In order to persist out results to some outside system, we have to use a data sink. 
 [Data Sinks](https://ci.apache.org/projects/flink/flink-docs-master/dev/datastream_api.html#data-sinks "Flink data sink documentation") are connectors that consume Data Streams and forward them to files, sockets, external systems, or print them.
 
-Flink provides a number of "out of the box" [connectors](https://ci.apache.org/projects/flink/flink-docs-master/dev/connectors/index.html "out of the box connector documentation") with various guarantees. 
+Flink provides a number of "out of the box" [connectors](https://ci.apache.org/projects/flink/flink-docs-master/dev/connectors/index.html "out of the box connector documentation") with various [guarantees](http://dataartisans.github.io/flink-training/slides/flink_stream_statefulOps.pdf). 
 It is also possible to define your own.
 
 While investigating PostgreSQL sinks I came across [this excellent flink blog series](http://bytefish.de/blog/apache_flink_series_4/ "bytefish flink blog series"). 
