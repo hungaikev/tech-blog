@@ -29,7 +29,8 @@ Flink provides a number of "out of the box" [connectors](https://ci.apache.org/p
 It is also possible to define your own.
 
 While investigating PostgreSQL sinks I came across [this excellent flink blog series](http://bytefish.de/blog/apache_flink_series_4/ "bytefish flink blog series"). 
-Philipp also writes a PostgreSQL sink, however, as our requirements emerged they were a bit different from his, so I decided to try writing my own.
+Philipp also writes a PostgreSQL sink which batches writes up to a given batch count. 
+As our requirements emerged we needed more control over when to write to the database, so I decided to try implementing my own.
 
 ## Using the `JDBCOutputFormat`
 
