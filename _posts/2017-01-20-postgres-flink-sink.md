@@ -237,12 +237,19 @@ public void invoke(Case aCase) throws Exception {
 }
 ```
 
-The number of times we write to the database is now reduced, which is great, but it doesn't really mirror how Flink is doing things.
+The number of times we write to the database is now reduced, which is great, but it doesn't realANly mirror how Flink is doing things.
 
 ## Checkpoint aware Sink
 
-Flink also has a concept of checkpointing, what about if we wrote then.
-What is checkpointing?
+Flink also has a concept of [checkpointing](https://ci.apache.org/projects/flink/flink-docs-master/dev/stream/checkpointing.html "Flink checkpoint documentation"):
+>Every function and operator in Flink can be stateful. 
+Stateful functions store data across the processing of individual elements/events, making state a critical building block for any type of more elaborate operation.
+
+>In order to make state fault tolerant, Flink needs to checkpoint the state. 
+Checkpoints allow Flink to recover state and positions in the streams to give the application the same semantics as a failure-free execution.
+
+
+Once a checkpoint is complete seems like a good place to write to the database: this means we maintain consistency with what Flink has fully processed.
 
 By letting our sink implement `CheckpointListener.notifyCheckpointComplete(long checkpointId)` we will be notified when a checkpoint is completed.
 On notification we should upsert all cases completed up to, and including, the given checkpoint.
