@@ -76,13 +76,13 @@ We're going to map the ID to case ID, and the trace hash to tracehash by impleme
 
 ```java
 DataStream<Case> cases = ...
-		
-		DataStream<Row> rows = cases.map((MapFunction<Case, Row>) aCase -> {
-			Row row = new Row(2); // our prepared statement has 2 parameters
-			row.setField(0, aCase.getId()); //first parameter is case ID
-			row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
-			return row;
-		});
+
+  DataStream<Row> rows = cases.map((MapFunction<Case, Row>) aCase -> {
+   Row row = new Row(2); // our prepared statement has 2 parameters
+   row.setField(0, aCase.getId()); //first parameter is case ID
+   row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
+   return row;
+  });
 ```
 
 And finally we can specify the sink:
@@ -137,7 +137,7 @@ Ok, but instead of a new row I want to either create a new row if one does not e
 I'm using PostgreSQL so I will just modify my query to include an `ON CONFLICT` statement.
 
 ```java
-String query = "INSERT INTO public.cases (caseid, tracehash) VALUES (?, ?) ON CONFLICT (caseid) DO UPDATE SET events=?";
+String query = "INSERT INTO public.cases (caseid, tracehash) VALUES (?, ?) ON CONFLICT (caseid) DO UPDATE SET tracehash=?";
 ```
 
 This means I have a new parameter, and I must specify a value for this. 
@@ -172,7 +172,7 @@ I also need to add a constraint to my table:
 CREATE TABLE cases
 (
   caseid VARCHAR(255),
-  events VARCHAR(255),
+  tracehash VARCHAR(255),
   CONSTRAINT cases_unique UNIQUE (caseid)
 );
 ```
@@ -202,10 +202,10 @@ We'll hard code the PostgreSQL driver and connection details.
 ```java
 public class RichCaseSink extends RichSinkFunction<Case> {
 	
-	private static final String UPSERT_CASE = "INSERT INTO public.cases (caseid, events) "
+	private static final String UPSERT_CASE = "INSERT INTO public.cases (caseid, tracehash) "
 			+ "VALUES (?, ?) "
 			+ "ON CONFLICT (caseid) DO UPDATE SET "
-			+ "  events=?";
+			+ "  tracehash=?";
 	
 	private PreparedStatement statement;
 	
@@ -266,6 +266,9 @@ public void invoke(Case aCase) throws Exception {
 
 The number of times we write to the database is now reduced, which is great, but it doesn't really mirror how Flink is doing things.
 
+There are also other issues with this implementation, i.e. a new event must appear if we want to write to the DB after a certain amount of time.
+We could implement a `ScheduledExecutorService` to get around this, however lets take a closer look at Flink instead.
+
 ## Making our Sink checkpoint aware
 
 Flink also has a concept of [checkpointing](https://ci.apache.org/projects/flink/flink-docs-master/dev/stream/checkpointing.html "Flink checkpoint documentation"):
@@ -275,9 +278,9 @@ Stateful functions store data across the processing of individual elements/event
 >In order to make state fault tolerant, Flink needs to checkpoint the state. 
 Checkpoints allow Flink to recover state and positions in the streams to give the application the same semantics as a failure-free execution.
 
-We are using a `RocksDBStateBackend` to store our cases.
+We are using a `RocksDBStateBackend` to store our cases while we build them, so we are already stateful and want to take part in checkpointing.
 
-Once a checkpoint is complete seems like a good place to write to the database: this means we maintain consistency with what Flink has fully processed.
+Given this, once a checkpoint is complete seems like a good place to write to the database: this means we maintain consistency with what Flink has fully processed.
 
 By letting our sink implement `CheckpointListener.notifyCheckpointComplete(long checkpointId)` we will be notified when a checkpoint is completed.
 On notification we should upsert all cases completed up to, and including, the given checkpoint.
