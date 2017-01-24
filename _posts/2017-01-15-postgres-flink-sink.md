@@ -49,10 +49,10 @@ The `JDBCOutputFormat` requires a prepared statement, driver and database connec
 
 ```java
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
-     .setDrivername("org.postgresql.Driver")
-     .setDBUrl("jdbc:postgresql://localhost:1234/test?user=xxx&password=xxx")
-     .setQuery(query)
-     .finish();
+ .setDrivername("org.postgresql.Driver")
+ .setDBUrl("jdbc:postgresql://localhost:1234/test?user=xxx&password=xxx")
+ .setQuery(query)
+ .finish();
 ```
 
 The query is the prepared statement, in our case this is sufficient:
@@ -123,11 +123,11 @@ I can do so using the builder and simply passing in an array of `java.sql.Types`
 
 ```java
 JDBCOutputFormat jdbcOutput = JDBCOutputFormat.buildJDBCOutputFormat()
-     .setDrivername("org.postgresql.Driver")
-     .setDBUrl("jdbc:postgresql://localhost:1234/test?user=xxx&password=xxx")
-     .setQuery(query)
-     .setSqlTypes(new int[] { Types.VARCHAR, Types.VARCHAR }) //set the types
-     .finish();
+ .setDrivername("org.postgresql.Driver")
+ .setDBUrl("jdbc:postgresql://localhost:1234/test?user=xxx&password=xxx")
+ .setQuery(query)
+ .setSqlTypes(new int[] { Types.VARCHAR, Types.VARCHAR }) //set the types
+ .finish();
 ```
 
 And now I don't get spammed with warnings.
@@ -145,13 +145,13 @@ I need to do so in my MapFunction, which now looks like this:
 
 ```java
 DataStream<Case> cases = ...
-		
+    
 DataStream<Row> rows = cases.map((MapFunction<Case, Row>) aCase -> {
-	Row row = new Row(3); // our prepared statement has 3 parameters
-	row.setField(0, aCase.getId()); //first parameter is caseid
-	row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
-	row.setField(2, aCase.getTraceHash()); //third parameter is also tracehash
-	return row;
+  Row row = new Row(3); // our prepared statement has 3 parameters
+  row.setField(0, aCase.getId()); //first parameter is caseid
+  row.setField(1, aCase.getTraceHash()); //second paramater is tracehash
+  row.setField(2, aCase.getTraceHash()); //third parameter is also tracehash
+  return row;
 });
 ```
 
@@ -201,34 +201,34 @@ We'll hard code the PostgreSQL driver and connection details.
 
 ```java
 public class RichCaseSink extends RichSinkFunction<Case> {
-	
-	private static final String UPSERT_CASE = "INSERT INTO public.cases (caseid, tracehash) "
-			+ "VALUES (?, ?) "
-			+ "ON CONFLICT (caseid) DO UPDATE SET "
-			+ "  tracehash=?";
-	
-	private PreparedStatement statement;
-	
-	
-	@Override
-	public void invoke(Case aCase) throws Exception {
-		
-		statement.setString(1, aCase.getId());
-		statement.setString(2, aCase.getTraceHash());
-		statement.setString(3, aCase.getTraceHash());
-		statement.addBatch();
-		statement.executeBatch();
-	}
-	
-	@Override
-	public void open(Configuration parameters) throws Exception {
-		Class.forName("org.postgresql.Driver");
-		Connection connection =
-				DriverManager.getConnection("jdbc:postgresql://localhost:5432/casedb?user=signavio&password=signavio");
-		
-		statement = connection.prepareStatement(UPSERT_CASE);
-	}
-	
+  
+  private static final String UPSERT_CASE = "INSERT INTO public.cases (caseid, tracehash) "
+      + "VALUES (?, ?) "
+      + "ON CONFLICT (caseid) DO UPDATE SET "
+      + "  tracehash=?";
+  
+  private PreparedStatement statement;
+  
+  
+  @Override
+  public void invoke(Case aCase) throws Exception {
+    
+    statement.setString(1, aCase.getId());
+    statement.setString(2, aCase.getTraceHash());
+    statement.setString(3, aCase.getTraceHash());
+    statement.addBatch();
+    statement.executeBatch();
+  }
+  
+  @Override
+  public void open(Configuration parameters) throws Exception {
+    Class.forName("org.postgresql.Driver");
+    Connection connection =
+        DriverManager.getConnection("jdbc:postgresql://localhost:5432/casedb?user=signavio&password=signavio");
+    
+    statement = connection.prepareStatement(UPSERT_CASE);
+  }
+  
 }
 ```
 We need to add our new sink to our case data stream:
@@ -249,18 +249,18 @@ Once a batch is executed we have to reset the count and record the time of the l
 ```java
 @Override
 public void invoke(Case aCase) throws Exception {
-	
-	statement.setString(1, aCase.getId());
-	statement.setString(2, aCase.getTraceHash());
-	statement.setString(3, aCase.getTraceHash());
-	statement.addBatch();
-	batchCount++;
-	
-	if (shouldExecuteBatch()) {
-		statement.executeBatch();
-		batchCount = 0;
-		lastBatchTime = System.currentTimeMillis();
-	}
+  
+  statement.setString(1, aCase.getId());
+  statement.setString(2, aCase.getTraceHash());
+  statement.setString(3, aCase.getTraceHash());
+  statement.addBatch();
+  batchCount++;
+  
+  if (shouldExecuteBatch()) {
+    statement.executeBatch();
+    batchCount = 0;
+    lastBatchTime = System.currentTimeMillis();
+  }
 }
 ```
 
@@ -293,7 +293,7 @@ We have to change our invoke method so that we just store the cases until we are
 ```java
 @Override
 public void invoke(Case aCase) throws Exception {
-	pendingCases.add(aCase);
+  pendingCases.add(aCase);
 }
 ```
 
@@ -304,14 +304,14 @@ We will maintain a map of checkpoint IDs to lists of cases.
 ```java
 @Override
 public void snapshotState(FunctionSnapshotContext context) throws Exception {
-	long checkpointId = context.getCheckpointId();
-	List<Case> cases = pendingCasesPerCheckpoint.get(checkpointId);
-	if(cases == null){
-		cases = new ArrayList<>();
-		pendingCasesPerCheckpoint.put(checkpointId, cases);
-	}
-	cases.addAll(pendingCases);
-	pendingCases.clear();
+  long checkpointId = context.getCheckpointId();
+  List<Case> cases = pendingCasesPerCheckpoint.get(checkpointId);
+  if(cases == null){
+    cases = new ArrayList<>();
+    pendingCasesPerCheckpoint.put(checkpointId, cases);
+  }
+  cases.addAll(pendingCases);
+  pendingCases.clear();
 }
 ```
 
