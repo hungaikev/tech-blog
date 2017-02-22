@@ -74,7 +74,7 @@ GEM
     html-pipeline (2.5.0)
       activesupport (>= 2)
       nokogiri (>= 1.4)
-    i18n (0.8.0)
+    i18n (0.8.1)
     jekyll (3.3.1)
       addressable (~> 2.4)
       colorator (~> 1.0)
@@ -201,4 +201,4 @@ DEPENDENCIES
   susy
 
 BUNDLED WITH
-   1.14.3
+   1.14.4
