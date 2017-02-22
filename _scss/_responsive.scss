@@ -1,0 +1,68 @@
+@media (max-width: 767px) {
+	header {
+		.header {
+			.tech-blog-logo {
+				@include span(3);
+			}
+			.signavio-brand-logo {
+				@include span (3 last);
+			}
+		}
+	}
+	main {
+		.grid {
+			.grid-item {
+				@include span(full);
+			}
+			.grid-item-sizer {
+				box-sizing: border-box;
+				width: 100%;
+			}
+		}
+	}
+	.article main {
+		.main-content,
+		.side-content {
+			@include span(full);
+		}
+		.title-content {
+			h1 {
+				font-size: 2em;
+			}
+		}
+		.main-content {
+			.content {
+				table {
+					width: span(full);
+					max-width: none;
+				}
+			}
+		}
+		.side-content {
+			margin-bottom: 3em;
+		}
+	}
+}
+
+@media (max-width: 479px) {
+	header {
+		.header {
+			.tech-blog-logo {
+				@include span(4);
+			}
+			.signavio-brand-logo {
+				@include span (4 last);
+			}
+		}
+	}
+	main {
+		.blog-intro {
+			h1 {
+				font-size: 2.25em;
+			}
+			p {
+				font-size: 1.125em;
+			}
+		}
+	}
+}

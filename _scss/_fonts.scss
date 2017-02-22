@@ -1,0 +1,46 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:600,300);
+
+@font-face {
+	font-family: 'Signavicons';
+	// src:	url('../assets/fonts/Signavicons.eot?1we4ze');
+	src:	url('../assets/fonts/Signavicons.woff?1we4ze') format('woff'),
+			url('../assets/fonts/Signavicons.eot?1we4ze'),
+			url('../assets/fonts/Signavicons.eot?1we4ze#iefix') format('embedded-opentype'),
+			url('../assets/fonts/Signavicons.ttf?1we4ze') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.icon {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'Signavicons' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Enable Ligatures ================ */
+	letter-spacing: 0;
+	-webkit-font-feature-settings: "liga";
+	-moz-font-feature-settings: "liga=1";
+	-moz-font-feature-settings: "liga";
+	-ms-font-feature-settings: "liga" 1;
+	-o-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-corporate-logo-gazelle:before {
+  content: "\eff1";
+}
+.icon-corporate-logo:before {
+  content: "\eff0";
+}
+.icon-typo-edge:before {
+  content: "\e000";
+}

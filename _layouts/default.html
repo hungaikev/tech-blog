@@ -1,0 +1,18 @@
+{% include header.html %}
+<body class="home">
+	<div id="wrapper">
+		<header>
+			<div class="header">
+				<div class="container">
+					<a href="{{ relative_url }}"><div class="tech-blog-logo"></div></a>
+					<a href="https://www.signavio.com"><div class="signavio-brand-logo"></div></a>
+				</div>
+			</div>
+		</header>
+		<main>
+			{{ content }}
+		</main>
+	</div>
+	{% include footer.html %}
+</body>
+</html>

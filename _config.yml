@@ -5,3 +5,7 @@ permalink: ":year/:title.html"
 timezone: Europe/Berlin
 title: Signavio Tech Blog
 highlighter: rouge
+
+sass:
+  sass_dir: _scss
+  style: compressed
