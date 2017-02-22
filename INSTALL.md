@@ -9,12 +9,12 @@ If `sudo gem install bundler` fails with:
 
 … then `sudo gem update --system`
 
-If `sudo gem install nokogiri -v '1.7.0.1'` fails with:
+If `bundle install'` fails with:
 
-  ERROR:  Error installing nokogiri:
-  	ERROR: Failed to build gem native extension.
+  An error occurred while installing nokogiri (1.6.8.1), and Bundler cannot continue.
+  Make sure that `gem install nokogiri -v '1.6.8.1'` succeeds before bundling.
 
-… then `sudo gem install nokogiri -v '1.7.0.1' -- --use-system-libraries`
+… then `bundle config build.nokogiri --use-system-libraries` and retry.
 
 
 ## Ubuntu
