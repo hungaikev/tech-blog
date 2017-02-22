@@ -1,9 +1,12 @@
 ---
-title: "How to transform Markdown to a Word document with Apache POI"
+title: "Transforming Markdown to Word with Apache POI"
 description: "Using Pegdown and JSoup to generate Apache POI’s XWPF format"
 author: Stefan Herz
 tags: document, data transformation, Microsoft Word, Apache POI, JSoup, Pegdown
 layout: article
+image:
+  feature: /2017/word-basic-text-formats.png
+  alt: "Basic text formatting in a Word document"
 ---
 
 ## Introducing a way to transform Markdown to a Word document
