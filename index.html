@@ -10,10 +10,10 @@ layout: default
 		<div class="grid-item-sizer"></div>
 		<div class="grid-item-margin"></div>
 		{% for page in site.posts %}
-		<a href="{{ page.url | replace:'.html','' }}">
+		<a href="{{ '..' | append: page.url | replace:'.html','' }}">
 			<div class="grid-item">
 				{% if page.image.feature %}
-				<div class="featured"><img src="{{ page.image.feature }}" alt="{{ page.image.alt }}"></div>
+				<div class="featured"><img src="{{ '..' | append: page.image.feature }}" alt="{{ page.image.alt }}"></div>
 				{% endif %}
 				<div class="content">
 					<h2 class="title">{{ page.title }}</h2>
