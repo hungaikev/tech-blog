@@ -12,7 +12,7 @@
 		<main>
 			<div class="container">
 				{% if page.image.feature %}
-				<div class="featured"><img src="{{ page.image.feature }}" alt="{{ page.image.alt }}"></div>
+				<div class="featured"><img src="{{ '..' | append: page.image.feature }}" alt="{{ page.image.alt }}"></div>
 				{% endif %}
 				<div class="title-content">
 					<h1>{{ page.title }}</h1>
