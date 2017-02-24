@@ -7,11 +7,11 @@
 <link rel="stylesheet" type="text/css" href="{{ "../css/styles.css" }}">
 <link rel="icon" href="https://www.signavio.com/favicon.ico" type="image/vnd.microsoft.icon">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Signavio TechBlog">
-<meta name="keywords" content="software development, writing, tech, signavio">
+<meta name="description" content="{{ page.description }}">
+<meta name="keywords" content="{% if page.tags %}{{ page.tags }}{% else %}software development, writing, tech{% endif %}">
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:site" content="@signavio" />
-<meta name="twitter:title" content="Signavio" />
-<meta name="twitter:description" content="Signavio is the leading platform for business process management and business decision management in the cloud." />
-<meta name="twitter:image" content="/assets/img/signavio_twitter_400x400.png" />
+<meta name="twitter:site" content="@Signavio" />
+<meta name="twitter:title" content="{% if page.title %}{{ page.title }} - {% endif %}Signavio Tech Blog" />
+<meta name="twitter:description" content="{{ page.description }}" />
+<meta name="twitter:image" content="https://tech.signavio.com{% if page.image.feature %}{{ page.image.feature }}{% else %}/assets/img/signavio_twitter_400x400.png{% endif %}" />
 </head>
